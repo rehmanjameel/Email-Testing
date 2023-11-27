@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -15,6 +16,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import papaya.in.sendmail.SendMail;
 
@@ -22,6 +25,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     GoogleSignInOptions signInOptions;
     GoogleSignInClient signInClient;
+    FirebaseAuth firebaseAuth;
 
     MaterialButton emailSend, signOut;
     TextView userName, userEmail;
@@ -35,6 +39,20 @@ public class DashboardActivity extends AppCompatActivity {
         signOut = findViewById(R.id.signout);
         userName = findViewById(R.id.userName);
         userEmail = findViewById(R.id.userEmail);
+
+        // Initialize firebase auth
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        // Initialize firebase user
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        // Check condition
+        if (firebaseUser != null) {
+            // When firebase user is not equal to null set image on image view
+//            Glide.with(DashboardActivity.this).load(firebaseUser.getPhotoUrl()).into(ivImage);
+            // set name on text view
+//            userName.setText(firebaseUser.getDisplayName());
+        }
 
         // set the sign in option via email
         signInOptions = new GoogleSignInOptions
@@ -72,8 +90,11 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void signOutUser() {
         signInClient.signOut().addOnCompleteListener(task -> {
-            startActivity(new Intent(DashboardActivity.this, MainActivity.class));
-            finish();
+            if (task.isSuccessful()) {
+                firebaseAuth.signOut();
+                startActivity(new Intent(DashboardActivity.this, MainActivity.class));
+                finish();
+            }
         });
     }
 }
