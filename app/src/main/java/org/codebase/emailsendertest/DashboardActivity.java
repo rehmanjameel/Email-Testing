@@ -168,7 +168,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             // Second part is image attachment
             messageBodyPart = new MimeBodyPart();
-            String filename = "image.png";
+            String filename = "facebook.png";
             DataSource source = new FileDataSource(filename);
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(filename);
